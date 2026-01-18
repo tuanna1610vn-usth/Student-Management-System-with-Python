@@ -17,7 +17,8 @@ class MarkManagement():
         ID = student.getID()
 
         if ID in self.__students:
-            raise ValueError("Student ID already exists!")
+            t = self.saveThread()
+            raise ValueError(f"Student ID already exists! {t}")
         else:
             self.__students[ID] = student
     
@@ -25,7 +26,8 @@ class MarkManagement():
         ID = course.getID()
 
         if ID in self.__courses:
-            raise ValueError("Course ID already exists!")
+            t = self.saveThread()
+            raise ValueError(f"Student ID already exists! {t}")
         else:
             self.__courses[ID] = course
 
@@ -33,13 +35,15 @@ class MarkManagement():
         if ID in self.__students:
             return self.__students[ID]
         else:
-            raise ValueError("Student ID not found!")
+            t = self.saveThread()
+            raise ValueError(f"Student ID not found! {t}")
         
     def getCourse(self, ID):
         if ID in self.__courses:
             return self.__courses[ID]
         else:
-            raise ValueError("Course ID not found!")
+            t = self.saveThread()
+            raise ValueError(f"Student ID not found! {t}")
         
     def getAllStudents(self):
         return list(self.__students.values())
@@ -52,9 +56,11 @@ class MarkManagement():
     
     def addMark(self, student, course, score):
         if student not in self.__students.values():
-            raise ValueError("Student ID not found!")
+            t = self.saveThread()
+            raise ValueError(f"Student ID not found! {t}")
         elif course not in self.__courses.values():
-            raise ValueError("Course ID not found!")
+            t = self.saveThread()
+            raise ValueError(f"Course ID not found! {t}")
         else:
             m = Mark(student, course, None)
             m.setScore(score)
@@ -94,7 +100,7 @@ class MarkManagement():
         GPA = 0
 
         for m in self.__marks:
-            if m.getStudent() == student:
+            if m.getStudent().getID().lower() == student.getID().lower():
                 results.append(m.getScore())
                 credits.append(m.getCourse().getCredits())
                 # Linear order
