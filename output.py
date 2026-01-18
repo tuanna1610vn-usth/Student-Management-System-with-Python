@@ -33,7 +33,7 @@ def showMark(system, course_id, stdscr):
     stdscr.addstr(5, 30, f"=== ALL SCORE OF {course_id} ===", curses.A_BOLD | curses.A_UNDERLINE)
     i = 6
     marks = system.getMark(course_id)
-    if type(marks) == str:
+    if isinstance(marks, str):
         stdscr.addstr(6, 30, marks)
     else:
         for m in marks:
@@ -45,7 +45,7 @@ def showStudentResult(system, student_id, stdscr):
     stdscr.addstr(5, 30, f"=== ACADEMIC RESULTS OF STUDENT {student_id} ===", curses.A_BOLD | curses.A_UNDERLINE)
     i = 6
     results = system.getStudentResult(student_id)
-    if type(results) == str:
+    if isinstance(results, str):
         stdscr.addstr(6, 30, results)
     else:
         for r in results:
