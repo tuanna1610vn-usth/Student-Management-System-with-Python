@@ -115,7 +115,7 @@ def main(stdscr):
                     duplicated = False
                     for s in students:
                         for m in marks:
-                            if m.getStudent() == s and m.getCourse() == course:
+                            if m.getStudent().getID().lower() == s and m.getCourse().getID().lower() == course.getID().lower():
                                 duplicated = True
                         if duplicated:
                             continue
@@ -151,6 +151,7 @@ def main(stdscr):
                 stdscr.addstr(30, 30, "Press any key to continue...")
                 stdscr.getch()
         elif choice == "7":
+            curses.echo()
             stdscr.clear()
             stdscr.addstr(10, 30, "=== ACADEMIC RESULT OF STUDENT ===", curses.A_BOLD | curses.A_UNDERLINE)
             stdscr.addstr(11, 30, "Enter a student ID: ")
