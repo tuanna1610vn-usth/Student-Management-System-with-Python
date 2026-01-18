@@ -1,7 +1,4 @@
-#from domains.Student import Student
 import curses
-#def showStudent(student : Student, stdscr):
-#    stdscr
 
 def showAllStudents(students, stdscr):
     stdscr.clear()

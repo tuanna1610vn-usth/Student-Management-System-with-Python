@@ -2,6 +2,10 @@ from .Course import Course
 from .Student import Student
 from .Mark import Mark
 import numpy as np
+import threading
+import pickle
+import zipfile
+import os
 
 class MarkManagement():
     def __init__(self):
@@ -105,16 +109,90 @@ class MarkManagement():
     
     def GPA_ranking(self):
         rank = []
-        #GPA_list = []
 
         for s in self.__students.values():
             GPA = self.calGPA(s)
-            #GPA_list.append(GPA)
             in4 = {}
             in4["Student"] = s
             in4["GPA"] = GPA
             rank.append(in4)
         
-        #GPA_list.sort(reverse=True)
         rank.sort(key=lambda x: x["GPA"], reverse=True)
         return rank
+    
+    def __serialize(self):
+        with open("students.bin", "wb") as f:
+            pickle.dump(self.__students, f)
+        with open("courses.bin", "wb") as f:
+            pickle.dump(self.__courses, f)
+        with open("marks.bin", "wb") as f:
+            pickle.dump(self.__marks, f)
+    
+    def __deserialize(self, students, courses, marks):
+        self.__students = students
+        self.__courses = courses
+        self.__marks = marks
+    
+    def __load(self):
+        if os.path.exists("students.dat.zip"):
+            students = None
+            courses = None
+            marks = None
+
+            try:
+                with zipfile.ZipFile("students.dat.zip", "r") as zipf:
+                    zipf.extractall(".")
+        
+                if os.path.exists("students.bin"):
+                    try:
+                        with open("students.bin", "rb") as f:
+                            students = pickle.load(f)
+                    except Exception as e:
+                        self.__log_error(f"{e}")
+            
+                if os.path.exists("courses.bin"):
+                    try:
+                        with open("courses.bin", "rb") as f:
+                            courses = pickle.load(f)
+                    except Exception as e:
+                        self.__log_error(f"{e}")
+            
+                if os.path.exists("marks.bin"):
+                    try:
+                        with open("marks.bin", "rb") as f:
+                            marks = pickle.load(f)
+                    except Exception as e:
+                        self.__log_error(f"{e}")
+
+                self.__deserialize(students, courses, marks)
+            except zipfile.BadZipFile:
+                self.__log_error("Corrupted data archive")
+            except PermissionError:
+                self.__log_error("Access denied")
+            except OSError as e:
+                self.__log_error(f"OS Error: {e}")
+        
+    def __save(self):
+        self.__serialize()
+        with zipfile.ZipFile("students.dat.zip", "w", zipfile.ZIP_DEFLATED) as zipf:
+            zipf.write("students.bin")
+            os.remove("students.bin")
+            zipf.write("courses.bin")
+            os.remove("courses.bin")
+            zipf.write("marks.bin")
+            os.remove("marks.bin")
+
+    def loadThread(self):
+        t = threading.Thread(target=self.__load)
+        t.start()
+        t.join()
+        return f"Data loaded successfully!"
+
+    def saveThread(self):
+        t = threading.Thread(target=self.__save)
+        t.start()
+        t.join()
+        return f"Data saved successfully!"
+
+    def __log_error(self, msg):
+        print(f"[LOAD ERROR] {msg}")

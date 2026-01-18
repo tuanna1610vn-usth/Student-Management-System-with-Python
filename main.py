@@ -5,6 +5,7 @@ import curses
 
 def main(stdscr):
     system = MarkManagement()
+    loading_state = system.loadThread()
 
     while True:
         stdscr.clear()
@@ -24,11 +25,19 @@ def main(stdscr):
         stdscr.addstr(10, 30, "WELCOME TO STUDENT MANAGEMENT SYSTEM", curses.A_BOLD | curses.A_UNDERLINE)
         stdscr.addstr(11, 30, "Please choose one of the following mode: ")
         stdscr.addstr(12, 30, screen)
+        stdscr.addstr(0, 0, loading_state)
 
         stdscr.refresh()
         choice = stdscr.getkey()
 
         if choice == "0":
+            saving_state = system.saveThread()
+
+            stdscr.clear()
+            stdscr.addstr(10, 30, "THANK YOU FOR USING STUDENT MANAGEMENT SYSTEM!", curses.A_BOLD)
+            stdscr.addstr(11, 30, saving_state)
+            stdscr.addstr(12, 30, "Press any key to exit...")
+            stdscr.getch()
             return
         elif choice == "1":
             curses.echo()
