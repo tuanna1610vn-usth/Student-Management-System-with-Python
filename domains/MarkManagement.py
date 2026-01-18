@@ -67,7 +67,8 @@ class MarkManagement():
                 if course_id == m.getCourse().getID():
                     marks.append(m)
             if not marks:
-                return f"No marks was input for course {m.getCourse().getName()}"
+                course = self.__courses[course_id]
+                return f"No marks was input for course {course.getName()}"
             else:
                 return marks
         else:
@@ -97,6 +98,9 @@ class MarkManagement():
                 results.append(m.getScore())
                 credits.append(m.getCourse().getCredits())
                 # Linear order
+        
+        if not credits:
+            return 0
         
         table = np.array([results, credits])
 
@@ -129,9 +133,12 @@ class MarkManagement():
             pickle.dump(self.__marks, f)
     
     def __deserialize(self, students, courses, marks):
-        self.__students = students
-        self.__courses = courses
-        self.__marks = marks
+        if students is not None:
+            self.__students = students
+        if courses is not None:
+            self.__courses = courses
+        if marks is not None:
+            self.__marks = marks
     
     def __load(self):
         if os.path.exists("students.dat.zip"):
