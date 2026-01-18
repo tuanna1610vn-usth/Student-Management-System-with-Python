@@ -115,7 +115,7 @@ def main(stdscr):
                     duplicated = False
                     for s in students:
                         for m in marks:
-                            if m.getStudent().getID().lower() == s and m.getCourse().getID().lower() == course.getID().lower():
+                            if m.getStudent().getID().lower() == s.getID().lower() and m.getCourse().getID().lower() == course.getID().lower():
                                 duplicated = True
                         if duplicated:
                             continue
